@@ -22,12 +22,12 @@ router.post('/new', async (req, res) => {
             player1: {
                 userId: req.body.player1Id,
                 maze: maze1.maze,
-                activeCard: activeCards1
+                activeCards: activeCards1
             },
             player2: {
                 userId: req.body.player2Id,
                 maze: maze2.maze,
-                activeCard: activeCards2
+                activeCards: activeCards2
             },
             userActiveturn: req.body.player1Id
         }
@@ -72,7 +72,6 @@ global.io.on("connection", (socket) => {
     });
 
     socket.on('ActionPerformed', async (data) => {
-        console.log({ data });
         global.io.to(data.matchId).emit("recieveAction", data);//aqui mando a los clientes la informacion
     });
 
