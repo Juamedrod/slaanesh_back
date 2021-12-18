@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 
 /**
  * Global Configs
@@ -9,14 +11,21 @@ require('dotenv').config();
 require('./dbConfig');
 
 /**
-* Routers imports
-*/
-const apiRouter = require('./routes/api');
-
-/**
  * APP initialization
  */
 const app = express();
+const httpServer = createServer(app);
+global.io = new Server(httpServer, {
+    cors: {
+        origin: "http://localhost:4200",
+        methods: ["GET", "POST"]
+    }
+});
+
+/**
+* Routers imports
+*/
+const apiRouter = require('./routes/api');
 
 /**
  * Express Config
@@ -33,8 +42,8 @@ app.use(cors());
 app.use('/api', apiRouter);
 
 /**
- * APP listening
+ * IO listening
  */
-const server = app.listen((process.env.PORT || 3000), () => {
-    console.log('Server listening on port', server.address().port);
+httpServer.listen((process.env.PORT || 3000), () => {
+    console.log('Server listening on port', (process.env.PORT || 3000))
 });

@@ -13,7 +13,8 @@ const cardSchema = new Schema({
 
 const matchSchema = new Schema({
     player1: { type: mongoose.Mixed },
-    player2: { type: mongoose.Mixed }
+    player2: { type: mongoose.Mixed },
+    userActiveturn: String,
 })
 
 module.exports = mongoose.model('match', matchSchema);

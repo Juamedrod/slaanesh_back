@@ -5,19 +5,51 @@ const { getMaze } = require('../../utils');
 
 router.post('/new', async (req, res) => {
     try {
+        let tempMaze;
         const maze1 = await Maze.findOne({ userId: req.body.player1Id });
+        const activeCards1 = [];
+        tempMaze = maze1.toObject();
+        for (let index = 0; index < 6; index++) {
+            activeCards1.push(tempMaze.maze[Math.trunc(Math.random() * tempMaze.maze.length)]);
+        }
         const maze2 = await Maze.findOne({ userId: req.body.player2Id });
+        tempMaze = maze2.toObject();
+        const activeCards2 = [];
+        for (let index = 0; index < 6; index++) {
+            activeCards2.push(tempMaze.maze[Math.trunc(Math.random() * tempMaze.maze.length)]);
+        }
         const match = {
             player1: {
                 userId: req.body.player1Id,
-                maze: maze1.maze
+                maze: maze1.maze,
+                activeCard: activeCards1
             },
             player2: {
                 userId: req.body.player2Id,
-                maze: maze2.maze
-            }
+                maze: maze2.maze,
+                activeCard: activeCards2
+            },
+            userActiveturn: req.body.player1Id
         }
         const response = await Match.create(match);
+        res.json(response);
+    } catch (error) {
+        res.json({ error: error.message });
+    }
+});
+
+router.put('/', async (req, res) => {
+    try {
+        const response = await Match.findOneAndUpdate({ _id: req.body._id }, req.body);
+        res.json(response);
+    } catch (error) {
+        res.json({ error: error.message });
+    }
+});
+
+router.get('/', async (req, res) => {
+    try {
+        const response = await Match.findById(req.query.id);
         res.json(response);
     } catch (error) {
         res.json({ error: error.message });
@@ -31,6 +63,25 @@ router.get('/:id', async (req, res) => {
     } catch (error) {
         res.json({ error: error.message });
     }
+});
+
+global.io.on("connection", (socket) => {
+    socket.on('join', (data) => {
+        console.log('new connection in room: ', socket.id);
+        socket.join(data.matchId);
+    });
+
+    socket.on('ActionPerformed', async (data) => {
+        console.log({ data });
+        global.io.to(data.matchId).emit("recieveAction", data);//aqui mando a los clientes la informacion
+    });
+
+    socket.on('forceDisconnect', function () {
+        socket.disconnect(true);
+    });
+
+
+    socket
 });
 
 module.exports = router;

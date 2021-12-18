@@ -4,4 +4,14 @@ const getMaze = async (id) => {
     return Maze.findOne({ userId: req.params.id });
 }
 
-module.exports = { getMaze };
+class Action {
+    constructor(matchId, initCardId, targetCardID, action, turn) {
+        this.matchId = matchId;
+        this.initCardId = initCardId;
+        this.targetCardID = targetCardID;
+        this.action = action;
+        this.turn = turn;
+    }
+}
+
+module.exports = { getMaze, Action };
