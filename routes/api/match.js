@@ -5,28 +5,31 @@ const { getMaze } = require('../../utils');
 
 router.post('/new', async (req, res) => {
     try {
-        let tempMaze;
         const maze1 = await Maze.findOne({ userId: req.body.player1Id });
         const activeCards1 = [];
-        tempMaze = maze1.toObject();
+        const tempMaze1 = maze1.toObject();
         for (let index = 0; index < 6; index++) {
-            activeCards1.push(tempMaze.maze[Math.trunc(Math.random() * tempMaze.maze.length)]);
+            const random = Math.trunc(Math.random() * tempMaze1.maze.length);
+            activeCards1.push(tempMaze1.maze[random]);
+            tempMaze1.maze.splice(random, 1);
         }
         const maze2 = await Maze.findOne({ userId: req.body.player2Id });
-        tempMaze = maze2.toObject();
+        const tempMaze2 = maze2.toObject();
         const activeCards2 = [];
         for (let index = 0; index < 6; index++) {
-            activeCards2.push(tempMaze.maze[Math.trunc(Math.random() * tempMaze.maze.length)]);
+            const random = Math.trunc(Math.random() * tempMaze2.maze.length);
+            activeCards2.push(tempMaze2.maze[random]);
+            tempMaze2.maze.splice(random, 1);
         }
         const match = {
             player1: {
                 userId: req.body.player1Id,
-                maze: maze1.maze,
+                maze: tempMaze1.maze,
                 activeCards: activeCards1
             },
             player2: {
                 userId: req.body.player2Id,
-                maze: maze2.maze,
+                maze: tempMaze2.maze,
                 activeCards: activeCards2
             },
             userActiveturn: req.body.player1Id

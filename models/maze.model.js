@@ -8,7 +8,8 @@ const cardSchema = new Schema({
     cardType: { type: String, required: true },
     lives: { type: Number, required: true },
     defense: { type: Number, required: true },
-    attack: { type: Number, required: true }
+    attack: { type: Number, required: true },
+    rarity: { type: String }
 })
 
 const mazeSchema = new Schema({
