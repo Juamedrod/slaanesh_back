@@ -14,9 +14,28 @@ router.get('/', async (req, res) => {
     }
 });
 
+
+router.get('/:id', async (req, res) => {
+    try {
+        const response = await Card.findById(req.params.id);
+        res.json(response);
+    } catch (error) {
+        res.json({ error: error.message });
+    }
+});
+
 router.post('/', async (req, res) => {
     try {
         const response = await Card.create(req.body);
+        res.json(response);
+    } catch (error) {
+        res.json({ error: error.message });
+    }
+});
+
+router.put('/:id', async (req, res) => {
+    try {
+        const response = await Card.findByIdAndUpdate(req.params.id, req.body);
         res.json(response);
     } catch (error) {
         res.json({ error: error.message });

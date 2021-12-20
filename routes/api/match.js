@@ -79,8 +79,17 @@ global.io.on("connection", (socket) => {
         socket.disconnect(true);
     });
 
-
-    socket
 });
+
+router.delete('/:matchId', async (req, res) => {
+    try {
+        const response = await Match.findByIdAndRemove(req.params.matchId);
+        console.log(response);
+        res.json({ success: 'success' });
+    } catch (error) {
+        res.json({ error: error.message });
+    }
+});
+
 
 module.exports = router;
