@@ -17,7 +17,7 @@ const app = express();
 const httpServer = createServer(app);
 global.io = new Server(httpServer, {
     cors: {
-        origin: "http://localhost:4200",
+        origin: ["http://localhost:4200", "https://slaanesh.netlify.app/"],
         methods: ["GET", "POST"]
     }
 });
